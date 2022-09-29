@@ -18,6 +18,7 @@ define yum::config (
   Variant[Boolean, Integer, Enum['absent'], String, Sensitive[String]] $ensure,
   String                                            $key     = $title,
 ) {
+  include yum
   $_ensure = $ensure ? {
     Boolean   => bool2num($ensure),
     Sensitive => $ensure.unwrap,
@@ -31,7 +32,7 @@ define yum::config (
 
   $_show_diff = $ensure ? {
     Sensitive => false,
-    default   => true,
+    default   => $yum::show_diff,
   }
 
   augeas { "yum.conf_${key}":

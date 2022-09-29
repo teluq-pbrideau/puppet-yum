@@ -61,6 +61,10 @@
 # @param repodir
 #   Where are repos stored on this system?
 #
+# @param show_diff
+#   Wether to display diff when a config is changed.  It is useful when there is confidental
+#   information that you do not want displayed in the puppet logs.
+#
 # @example Enable management of the default repos for a supported OS:
 #   ---
 #   yum::manage_os_default_repos: true
@@ -113,6 +117,7 @@ class yum (
   String $utils_package_name = 'yum-utils',
   Boolean $purge_unmanaged_repos = false,
   Stdlib::Unixpath $repodir = '/etc/yum.repos.d',
+  Boolean $show_diff = true,
 ) {
   $module_metadata            = load_module_metadata($module_name)
   $supported_operatingsystems = $module_metadata['operatingsystem_support']
