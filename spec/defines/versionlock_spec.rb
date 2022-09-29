@@ -102,40 +102,35 @@ describe 'yum::versionlock' do
 
           it { is_expected.to compile.and_raise_error(%r(%\{EPOCH\}:%\{NAME\}-%\{VERSION\}-%\{RELEASE\}\.%\{ARCH\})) }
         end
-      end
 
-      context 'with a simple, well-formed package name title bash and a version' do
-        let(:facts) do
-          { os: { release: { major: 7 } },
-            package_provider: 'yum' }
-        end
+        context 'with a simple, well-formed package name title bash and a version' do
+          let(:title) { 'bash' }
+          let(:params) { { version: '4.3' } }
 
-        let(:title) { 'bash' }
-        let(:params) { { version: '4.3' } }
-
-        context 'with version set' do
-          it { is_expected.to compile.with_all_deps }
-
-          it 'contains a well-formed Concat::Fragment' do
-            is_expected.to contain_concat__fragment("yum-versionlock-#{title}").with_content("0:bash-4.3-*.*\n")
-          end
-        end
-
-        context 'with version, release, epoch and arch set' do
-          let(:params) do
-            {
-              version: '4.3',
-              release: '3.2',
-              arch: 'arm',
-              epoch: 42
-            }
-          end
-
-          context 'it works' do
+          context 'with version set' do
             it { is_expected.to compile.with_all_deps }
 
             it 'contains a well-formed Concat::Fragment' do
-              is_expected.to contain_concat__fragment("yum-versionlock-#{title}").with_content("42:bash-4.3-3.2.arm\n")
+              is_expected.to contain_concat__fragment("yum-versionlock-#{title}").with_content("0:bash-4.3-*.*\n")
+            end
+          end
+
+          context 'with version, release, epoch and arch set' do
+            let(:params) do
+              {
+                version: '4.3',
+                release: '3.2',
+                arch: 'arm',
+                epoch: 42
+              }
+            end
+
+            context 'it works' do
+              it { is_expected.to compile.with_all_deps }
+
+              it 'contains a well-formed Concat::Fragment' do
+                is_expected.to contain_concat__fragment("yum-versionlock-#{title}").with_content("42:bash-4.3-3.2.arm\n")
+              end
             end
           end
         end
