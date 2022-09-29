@@ -9,8 +9,7 @@ describe 'yum::versionlock' do
 
       context 'with package_provider set to yum' do
         let(:facts) do
-          { os: { release: { major: 7 } },
-            package_provider: 'yum' }
+          super().merge({ package_provider: 'yum' })
         end
 
         context 'with a simple, well-formed title 0:bash-4.1.2-9.el6_2.x86_64' do
@@ -138,8 +137,7 @@ describe 'yum::versionlock' do
 
       context 'with package_provider set to dnf' do
         let(:facts) do
-          { os: { release: { major: 8 } },
-            package_provider: 'dnf' }
+          super().merge({ package_provider: 'dnf' })
         end
 
         context 'with a simple, well-formed title, no version set' do
@@ -197,9 +195,6 @@ describe 'yum::versionlock' do
       end
 
       context 'with package_provider unset' do
-        let(:facts) do
-          { os: { release: { major: 7 } } }
-        end
         let(:title) { 'bash' }
         let(:params) { { version: '4.3' } }
 
