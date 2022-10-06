@@ -3,62 +3,83 @@
 require 'spec_helper'
 
 describe 'yum::config' do
-  context 'with no parameters' do
-    let(:title) { 'assumeyes' }
+  on_supported_os.each do |os, facts|
+    context "on #{os}" do
+      let(:facts) { facts }
 
-    it { is_expected.to compile.and_raise_error(%r{expects a value for parameter 'ensure'}) }
-  end
+      context 'with no parameters' do
+        let(:title) { 'assumeyes' }
 
-  context 'when ensure is a Boolean' do
-    let(:title) { 'assumeyes' }
-    let(:params) { { ensure: true } }
+        it { is_expected.to compile.and_raise_error(%r{expects a value for parameter 'ensure'}) }
+      end
 
-    it { is_expected.to compile.with_all_deps }
+      context 'when ensure is a Boolean' do
+        let(:title) { 'assumeyes' }
+        let(:params) { { ensure: true } }
 
-    it 'contains an Augeas resource with the correct changes' do
-      is_expected.to contain_augeas("yum.conf_#{title}").with(
-        changes: "set assumeyes '1'"
-      )
-    end
-  end
+        it { is_expected.to compile.with_all_deps }
 
-  context 'ensure is an Integer' do
-    let(:title) { 'assumeyes' }
-    let(:params) { { ensure: 0 } }
+        it 'contains an Augeas resource with the correct changes' do
+          is_expected.to contain_augeas("yum.conf_#{title}").with(
+            changes: "set assumeyes '1'"
+          )
+        end
+      end
 
-    it { is_expected.to compile.with_all_deps }
+      context 'ensure is an Integer' do
+        let(:title) { 'assumeyes' }
+        let(:params) { { ensure: 0 } }
 
-    it 'contains an Augeas resource with the correct changes' do
-      is_expected.to contain_augeas("yum.conf_#{title}").with(
-        changes: "set assumeyes '0'"
-      )
-    end
-  end
+        it { is_expected.to compile.with_all_deps }
 
-  context 'ensure is a comma separated String' do
-    let(:title) { 'assumeyes' }
-    let(:params) { { ensure: '1, 2' } }
+        it 'contains an Augeas resource with the correct changes' do
+          is_expected.to contain_augeas("yum.conf_#{title}").with(
+            changes: "set assumeyes '0'"
+          )
+        end
+      end
 
-    it { is_expected.to compile.with_all_deps }
+      context 'ensure is a comma separated String' do
+        let(:title) { 'assumeyes' }
+        let(:params) { { ensure: '1, 2' } }
 
-    it 'contains an Augeas resource with the correct changes' do
-      is_expected.to contain_augeas("yum.conf_#{title}").with(
-        changes: "set assumeyes '1, 2'"
-      )
-    end
-  end
+        it { is_expected.to compile.with_all_deps }
 
-  context 'when ensure is a Sensitive[String]' do
-    let(:title) { 'assumeyes' }
-    let(:params) { { ensure: sensitive('secret') } }
+        it 'contains an Augeas resource with the correct changes' do
+          is_expected.to contain_augeas("yum.conf_#{title}").with(
+            changes: "set assumeyes '1, 2'"
+          )
+        end
+      end
 
-    it { is_expected.to compile.with_all_deps }
+      context 'when ensure is a Sensitive[String]' do
+        let(:title) { 'assumeyes' }
+        let(:params) { { ensure: sensitive('secret') } }
 
-    it 'contains an Augeas resource with the correct changes' do
-      is_expected.to contain_augeas("yum.conf_#{title}").with(
-        changes: "set assumeyes 'secret'",
-        show_diff: false
-      )
+        it { is_expected.to compile.with_all_deps }
+
+        it 'contains an Augeas resource with the correct changes' do
+          is_expected.to contain_augeas("yum.conf_#{title}").with(
+            changes: "set assumeyes 'secret'",
+            show_diff: false
+          )
+        end
+      end
+
+      context 'when show_diff is disabled in yum::show_diff' do
+        let(:title) { 'assumeyes' }
+        let(:params) { { ensure: '1, 2' } }
+        let(:pre_condition) { 'class { yum : show_diff => false }' }
+
+        it { is_expected.to compile.with_all_deps }
+
+        it 'contains an Augeas resource with the correct changes' do
+          is_expected.to contain_augeas("yum.conf_#{title}").with(
+            changes: "set assumeyes '1, 2'",
+            show_diff: false
+          )
+        end
+      end
     end
   end
 end
