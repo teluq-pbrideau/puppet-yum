@@ -708,11 +708,7 @@ describe 'yum' do
       end
 
       context 'when custom repos is set' do
-        let(:params) { {
-          managed_repos: ['example'],
-          repos: { example: { baseurl: 'https://example.com', gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example' }},
-          gpgkeys: { '/etc/pki/rpm-gpg/RPM-GPG-KEY-example' => { 'source' => 'http://example.com/gpg' } }
-        } }
+        let(:params) { { managed_repos: ['example'], repos: { example: { baseurl: 'https://example.com', gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example' } }, gpgkeys: { '/etc/pki/rpm-gpg/RPM-GPG-KEY-example' => { 'source' => 'http://example.com/gpg' } } } }
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to have_yumrepo_resource_count(1) }
@@ -721,11 +717,7 @@ describe 'yum' do
       end
 
       context 'when custom repos with multiple gpgkeys is set' do
-        let(:params) { {
-          managed_repos: ['example'],
-          repos: { example: { baseurl: 'https://example.com', gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example2', }},
-          gpgkeys: { '/etc/pki/rpm-gpg/RPM-GPG-KEY-example' => { 'source' => 'http://example.com/gpg' }, '/etc/pki/rpm-gpg/RPM-GPG-KEY-example2' => { 'source' => 'http://example.com/gpg2' }}
-        } }
+        let(:params) { { managed_repos: ['example'], repos: { example: { baseurl: 'https://example.com', gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example file:///etc/pki/rpm-gpg/RPM-GPG-KEY-example2', } }, gpgkeys: { '/etc/pki/rpm-gpg/RPM-GPG-KEY-example' => { 'source' => 'http://example.com/gpg' }, '/etc/pki/rpm-gpg/RPM-GPG-KEY-example2' => { 'source' => 'http://example.com/gpg2' } } } }
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to have_yumrepo_resource_count(1) }
