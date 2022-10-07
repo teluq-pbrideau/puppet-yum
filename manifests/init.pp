@@ -158,8 +158,8 @@ class yum (
         # Handle GPG Key
         if ('gpgkey' in $attributes) {
           $matches = $attributes['gpgkey'].split(/\s/).match('^file://(.*)$')
-          if $matches {
-            $matches.each |$match| {
+          $matches.each |$match| {
+            if $match {
               $gpgkey = $match[1]
               if $gpgkey =~ Stdlib::AbsolutePath and $gpgkey in $gpgkeys {
                 if !defined(Yum::Gpgkey[$gpgkey]) {
@@ -169,8 +169,8 @@ class yum (
                   }
                 } # end if Yum::Gpgkey[$gpgkey] is not defined
               } # end if $gpgkey exists in gpgkeys
-            } # end each matches
-          } # end if gpgkey is a file:// resource
+            } # end if gpgkey is a file:// resource
+          } # end each matches
         } # end if $attributes has a gpgkey
       }
     }
